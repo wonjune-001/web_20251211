@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반응형 자기소개 - 동적 효과</title>
+    
+    <style>
+        /* 기본 스타일 (모바일 우선) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #2c3e50; /* 어두운 배경색으로 변경 */
+            color: #ecf0f1; /* 밝은 텍스트 색상 */
+            line-height: 1.6;
+            overflow-x: hidden; /* 가로 스크롤 방지 */
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* ------------------------- */
+        /* JS 배경 애니메이션용 컨테이너 스타일 */
+        #particle-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* 다른 콘텐츠 아래에 배치 */
+            overflow: hidden;
+            pointer-events: none; /* 클릭 방지 */
+        }
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float-up-down 15s infinite ease-in-out alternate;
+        }
+
+        @keyframes float-up-down {
+            0% { transform: translateY(0); opacity: 0.5; }
+            100% { transform: translateY(-100vh); opacity: 1; }
+        }
+        /* ------------------------- */
+
+        .header {
+            background-color: rgba(52, 152, 219, 0.85); /* 반투명 배경 */
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header h1 {
+            margin-bottom: 5px;
+            font-size: 2.5em;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            min-height: 1.2em; /* 타이핑 텍스트 영역 확보 */
+        }
+
+        .container {
+            padding: 20px;
+            padding-bottom: 70px; /* 푸터 공간 확보 */
+        }
+
+        .profile-card, .contact, .skills {
+            background-color: rgba(255, 255, 255, 0.95); /* 흰색 배경 반투명 */
+            color: #333;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+            transition: transform 0.3s ease; /* 호버 효과 추가 */
+        }
+        
+        .profile-card:hover, .skills:hover, .contact:hover {
+            transform: translateY(-5px);
+        }
+
+        .profile-card {
+            text-align: center;
+        }
+        
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            background-color: #3498db;
+            border: 4px solid #fff;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .skills h2 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+
+        .skills ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .skills li {
+            background-color: #3498db;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        
+        .skills li:hover {
+            background-color: #2980b9;
+        }
+
+        .footer {
+            background-color: #2c3e50;
+            color: #7f8c8d;
+            text-align: center;
+            padding: 15px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+        
+        /* ------------------------- */
+        /* 태블릿 스타일 (min-width: 768px) */
+        /* ------------------------- */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 700px;
+                margin: auto;
+            }
+
+            .profile-card {
+                display: flex;
+                align-items: center;
+                text-align: left;
+            }
+
+            .profile-image {
+                margin: 0 20px 0 0;
+                width: 150px;
+                height: 150px;
+            }
+
+            .skills ul {
+                justify-content: flex-start;
+            }
+
+            .footer {
+                position: relative;
+                margin-top: 20px;
+            }
+        }
+
+        /* ------------------------- */
+        /* 데스크톱 스타일 (min-width: 1024px) */
+        /* ------------------------- */
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 960px;
+                display: grid;
+                grid-template-columns: 2fr 1fr;
+                gap: 30px;
+                padding-bottom: 20px;
+            }
+
+            .profile-card {
+                grid-column: 1 / 3;
+            }
+
+            .skills {
+                grid-column: 1 / 2;
+            }
+
+            .contact {
+                grid-column: 2 / 3;
+                align-self: start;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="particle-container"></div>
+    
+    <header class="header">
+        <h1>이름</h1>
+        <p id="typing-text">직업/역할</p>
+    </header>
+
+    <main class="container">
+        <section class="profile-card">
+            <div class="profile-image">
+                </div>
+            <div>
+                <h2>저는...</h2>
+                <p>간단한 자기소개 문구입니다. 무엇을 하는 사람인지, 어떤 목표를 가지고 있는지 설명합니다. 이 텍스트는 태블릿/데스크톱에서 이미지 옆에 배치됩니다.</p>
+            </div>
+        </section>
+
+        <section class="skills">
+            <h2>보유 기술</h2>
+            <ul id="skill-list">
+                </ul>
+        </section>
+
+        <section class="contact">
+            <h2>연락처</h2>
+            <p>이메일: <a href="mailto:email@example.com">email@example.com</a></p>
+            <p>GitHub: <a href="https://github.com/yourusername" target="_blank">github.com/yourusername</a></p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 이름. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ------------------------------------------
+            // 1. 보유 기술 목록 동적 생성
+            // ------------------------------------------
+            const skillsData = [
+                "HTML5",
+                "CSS3",
+                "JavaScript (ES6+)",
+                "React",
+                "Node.js",
+                "Git/GitHub",
+                "Responsive Design",
+                "UI/UX Focus"
+            ];
+
+            const skillList = document.getElementById('skill-list');
+
+            skillsData.forEach(skill => {
+                const listItem = document.createElement('li');
+                listItem.textContent = skill;
+                skillList.appendChild(listItem);
+            });
+
+            // * 스킬 목록 클릭 이벤트 (선택적 기능)
+            skillList.addEventListener('click', function(event) {
+                if (event.target.tagName === 'LI') {
+                    console.log(`선택된 기술: ${event.target.textContent}`);
+                }
+            });
+
+
+            // ------------------------------------------
+            // 2. 타이핑 애니메이션 (헤더 텍스트 순환)
+            // ------------------------------------------
+            const typingElement = document.getElementById('typing-text');
+            const roles = ["웹 개발자", "프론트엔드 엔지니어", "반응형 디자인 전문가", "문제 해결사"];
+            let roleIndex = 0;
+            let charIndex = 0;
+
+            function type() {
+                const currentRole = roles[roleIndex];
+                if (charIndex < currentRole.length) {
+                    typingElement.textContent += currentRole.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(type, 100); // 타이핑 속도
+                } else {
+                    setTimeout(erase, 1500); // 다 치고 잠시 대기
+                }
+            }
+
+            function erase() {
+                const currentRole = roles[roleIndex];
+                if (charIndex > 0) {
+                    typingElement.textContent = currentRole.substring(0, charIndex - 1);
+                    charIndex--;
+                    setTimeout(erase, 50); // 지우는 속도
+                } else {
+                    roleIndex = (roleIndex + 1) % roles.length; // 다음 역할로 이동
+                    setTimeout(type, 500); // 다음 역할 타이핑 시작 전 대기
+                }
+            }
+            
+            // 초기 실행
+            type();
+
+            // ------------------------------------------
+            // 3. 움직이는 배경 (Particle Animation)
+            // ------------------------------------------
+            const particleContainer = document.getElementById('particle-container');
+            const particleCount = 40; // 생성할 입자 수
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // 랜덤 크기
+                const size = Math.random() * 8 + 3; // 3px ~ 11px
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // 랜덤 위치 (화면 전체)
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // 랜덤 애니메이션 속도 및 지연
+                particle.style.animationDuration = `${Math.random() * 15 + 10}s`; // 10s ~ 25s
+                particle.style.animationDelay = `${Math.random() * -15}s`; // 음수 지연으로 즉시 시작
+                
+                particleContainer.appendChild(particle);
+            }
+        });
+    </script>
+</body>
+</html>
